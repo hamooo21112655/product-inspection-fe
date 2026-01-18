@@ -1,52 +1,53 @@
-import { useState } from 'react';
-import { MainLayout } from '@/components/layout/MainLayout';
-import { PageHeader } from '@/components/layout/PageHeader';
-import { Button } from '@/components/ui/button';
-import { ProductForm } from '@/components/products/ProductForm';
-import { DeleteConfirmDialog } from '@/components/common/DeleteConfirmDialog';
-import { useDataStore } from '@/store/dataStore';
-import { Proizvod } from '@/types';
-import { Plus, Pencil, Trash2, Package } from 'lucide-react';
-import { toast } from 'sonner';
+import { useContext, useState } from "react";
+import { MainLayout } from "@/components/layout/MainLayout";
+import { PageHeader } from "@/components/layout/PageHeader";
+import { Button } from "@/components/ui/button";
+import { ProductForm } from "@/components/products/ProductForm";
+import { DeleteConfirmDialog } from "@/components/common/DeleteConfirmDialog";
+import { Product } from "@/types";
+import { Plus, Pencil, Trash2, Package } from "lucide-react";
+import { toast } from "sonner";
+import { ProductContext } from "@/contexts/ProductContext";
 
 export default function Products() {
-  const { proizvodi, addProizvod, updateProizvod, deleteProizvod } = useDataStore();
+  const { products, addProduct, updateProduct, deleteProduct } =
+    useContext(ProductContext);
   const [formOpen, setFormOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState<Proizvod | null>(null);
-  const [mode, setMode] = useState<'create' | 'edit'>('create');
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [mode, setMode] = useState<"create" | "edit">("create");
 
   const handleCreate = () => {
     setSelectedProduct(null);
-    setMode('create');
+    setMode("create");
     setFormOpen(true);
   };
 
-  const handleEdit = (product: Proizvod) => {
+  const handleEdit = (product: Product) => {
     setSelectedProduct(product);
-    setMode('edit');
+    setMode("edit");
     setFormOpen(true);
   };
 
-  const handleDelete = (product: Proizvod) => {
+  const handleDelete = (product: Product) => {
     setSelectedProduct(product);
     setDeleteOpen(true);
   };
 
-  const handleSubmit = (data: Omit<Proizvod, 'id' | 'createdAt'>) => {
-    if (mode === 'create') {
-      addProizvod(data);
-      toast.success('Proizvod uspješno dodan');
+  const handleSubmit = (data: Product) => {
+    if (mode === "create") {
+      addProduct(data);
+      toast.success("Proizvod uspješno dodan");
     } else if (selectedProduct) {
-      updateProizvod(selectedProduct.id, data);
-      toast.success('Proizvod uspješno izmijenjen');
+      updateProduct(selectedProduct.id, data);
+      toast.success("Proizvod uspješno izmijenjen");
     }
   };
 
   const confirmDelete = () => {
     if (selectedProduct) {
-      deleteProizvod(selectedProduct.id);
-      toast.success('Proizvod uspješno obrisan');
+      deleteProduct(selectedProduct.id);
+      toast.success("Proizvod uspješno obrisan");
       setDeleteOpen(false);
     }
   };
@@ -66,10 +67,12 @@ export default function Products() {
 
       <div className="p-6">
         <div className="card-section overflow-hidden">
-          {proizvodi.length === 0 ? (
+          {products.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-16 text-center">
               <Package className="w-12 h-12 text-muted-foreground/50 mb-4" />
-              <h3 className="font-medium text-lg mb-2">Nema evidentiranih proizvoda</h3>
+              <h3 className="font-medium text-lg mb-2">
+                Nema evidentiranih proizvoda
+              </h3>
               <p className="text-muted-foreground mb-4">
                 Počnite dodavanjem prvog proizvoda
               </p>
@@ -91,26 +94,28 @@ export default function Products() {
                 </tr>
               </thead>
               <tbody>
-                {proizvodi.map((proizvod) => (
-                  <tr key={proizvod.id}>
-                    <td className="font-medium">{proizvod.naziv}</td>
-                    <td>{proizvod.proizvodjac}</td>
-                    <td>{proizvod.serijskiBroj || '-'}</td>
-                    <td>{proizvod.zemljaPorijekla}</td>
-                    <td className="max-w-xs truncate">{proizvod.opis || '-'}</td>
+                {products.map((product) => (
+                  <tr key={product.id}>
+                    <td className="font-medium">{product.name}</td>
+                    <td>{product.manufacturer}</td>
+                    <td>{product?.serialNumber || "-"}</td>
+                    <td>{product.countryOrigin}</td>
+                    <td className="max-w-xs truncate">
+                      {product?.description || "-"}
+                    </td>
                     <td>
                       <div className="flex items-center gap-1">
                         <Button
                           variant="ghost"
                           size="icon"
-                          onClick={() => handleEdit(proizvod)}
+                          onClick={() => handleEdit(product)}
                         >
                           <Pencil className="w-4 h-4" />
                         </Button>
                         <Button
                           variant="ghost"
                           size="icon"
-                          onClick={() => handleDelete(proizvod)}
+                          onClick={() => handleDelete(product)}
                         >
                           <Trash2 className="w-4 h-4 text-destructive" />
                         </Button>
@@ -128,7 +133,7 @@ export default function Products() {
         open={formOpen}
         onOpenChange={setFormOpen}
         onSubmit={handleSubmit}
-        initialData={selectedProduct || undefined}
+        selectedProduct={selectedProduct || undefined}
         mode={mode}
       />
 
@@ -137,7 +142,7 @@ export default function Products() {
         onOpenChange={setDeleteOpen}
         onConfirm={confirmDelete}
         title="Obriši proizvod"
-        description={`Da li ste sigurni da želite obrisati proizvod "${selectedProduct?.naziv}"? Ova akcija se ne može poništiti.`}
+        description={`Da li ste sigurni da želite obrisati proizvod "${selectedProduct?.name}"? Ova akcija se ne može poništiti.`}
       />
     </MainLayout>
   );

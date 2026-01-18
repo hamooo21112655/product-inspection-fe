@@ -1,9 +1,9 @@
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import {
   Form,
   FormControl,
@@ -11,21 +11,43 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
+} from "@/components/ui/form";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog';
-import { Proizvod } from '@/types';
+} from "@/components/ui/dialog";
+import { Product } from "@/types";
+import { DialogDescription } from "@radix-ui/react-dialog";
+import { useEffect } from "react";
 
 const productSchema = z.object({
-  naziv: z.string().min(1, 'Naziv je obavezan').max(100),
-  proizvodjac: z.string().min(1, 'Proizvođač je obavezan').max(100),
-  serijskiBroj: z.string().max(50).optional(),
-  zemljaPorijekla: z.string().min(1, 'Zemlja porijekla je obavezna').max(100),
-  opis: z.string().max(500).optional(),
+  name: z
+    .string()
+    .trim()
+    .min(1, "Naziv je obavezan")
+    .max(50, "Naziv ne smije biti duži od 50 karaktera"),
+  manufacturer: z
+    .string()
+    .trim()
+    .min(1, "Proizvođač je obavezan")
+    .max(50, "Ime proizvođača ne smije biti duži od 50 karaktera"),
+  serialNumber: z
+    .string()
+    .trim()
+    .max(50, "Serijski broj ne smije biti duži 50 karaktera")
+    .optional(),
+  countryOrigin: z
+    .string()
+    .trim()
+    .min(1, "Zemlja porijekla je obavezna")
+    .max(50, "Ime zemlje ne smije biti duže od 50 karaktera"),
+  description: z
+    .string()
+    .trim()
+    .max(500, "Opis ne smije biti duži od 255 karaktera")
+    .optional(),
 });
 
 type ProductFormData = z.infer<typeof productSchema>;
@@ -33,48 +55,81 @@ type ProductFormData = z.infer<typeof productSchema>;
 interface ProductFormProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onSubmit: (data: ProductFormData) => void;
-  initialData?: Proizvod;
-  mode: 'create' | 'edit';
+  onSubmit: (data: Product) => void;
+  selectedProduct?: Product;
+  mode: "create" | "edit";
 }
 
 export function ProductForm({
   open,
   onOpenChange,
   onSubmit,
-  initialData,
+  selectedProduct,
   mode,
 }: ProductFormProps) {
   const form = useForm<ProductFormData>({
     resolver: zodResolver(productSchema),
     defaultValues: {
-      naziv: initialData?.naziv || '',
-      proizvodjac: initialData?.proizvodjac || '',
-      serijskiBroj: initialData?.serijskiBroj || '',
-      zemljaPorijekla: initialData?.zemljaPorijekla || '',
-      opis: initialData?.opis || '',
+      name: selectedProduct?.name || "",
+      manufacturer: selectedProduct?.manufacturer || "",
+      serialNumber: selectedProduct?.serialNumber || "",
+      countryOrigin: selectedProduct?.countryOrigin || "",
+      description: selectedProduct?.description || "",
     },
   });
 
-  const handleSubmit = (data: ProductFormData) => {
+  const handleSubmit = (data: Product) => {
     onSubmit(data);
     form.reset();
     onOpenChange(false);
   };
 
+  useEffect(() => {
+    if (mode === "edit" && selectedProduct) {
+      console.log(selectedProduct);
+      form.reset({
+        name: selectedProduct.name,
+        manufacturer: selectedProduct.manufacturer,
+        serialNumber: selectedProduct.serialNumber || "",
+        countryOrigin: selectedProduct.countryOrigin,
+        description: selectedProduct.description || "",
+      });
+    }
+  }, [mode, selectedProduct, form]);
+
+  useEffect(() => {
+    if (mode === "create") {
+      form.reset({
+        name: "",
+        manufacturer: "",
+        serialNumber: "",
+        countryOrigin: "",
+        description: "",
+      });
+    }
+  }, [mode, form]);
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
-          <DialogTitle>
-            {mode === 'create' ? 'Dodaj novi proizvod' : 'Izmijeni proizvod'}
-          </DialogTitle>
+          <div className="flex items-center gap-2">
+            <DialogTitle>
+              {mode === "create" ? "Dodaj novi proizvod" : "Izmijeni proizvod"}
+            </DialogTitle>
+            <DialogDescription className="text-xs text-muted-foreground">
+              (polja označena sa * su obavezna)
+            </DialogDescription>
+          </div>
         </DialogHeader>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
+          <form
+            onSubmit={form.handleSubmit(handleSubmit)}
+            className="space-y-4"
+          >
             <FormField
               control={form.control}
-              name="naziv"
+              name="name"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Naziv proizvoda *</FormLabel>
@@ -87,7 +142,7 @@ export function ProductForm({
             />
             <FormField
               control={form.control}
-              name="proizvodjac"
+              name="manufacturer"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Proizvođač *</FormLabel>
@@ -100,12 +155,15 @@ export function ProductForm({
             />
             <FormField
               control={form.control}
-              name="serijskiBroj"
+              name="serialNumber"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Serijski broj</FormLabel>
                   <FormControl>
-                    <Input placeholder="Unesite serijski broj (opcionalno)" {...field} />
+                    <Input
+                      placeholder="Unesite serijski broj (opcionalno)"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -113,7 +171,7 @@ export function ProductForm({
             />
             <FormField
               control={form.control}
-              name="zemljaPorijekla"
+              name="countryOrigin"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Zemlja porijekla *</FormLabel>
@@ -126,7 +184,7 @@ export function ProductForm({
             />
             <FormField
               control={form.control}
-              name="opis"
+              name="description"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Opis</FormLabel>
@@ -150,7 +208,7 @@ export function ProductForm({
                 Odustani
               </Button>
               <Button type="submit">
-                {mode === 'create' ? 'Dodaj proizvod' : 'Sačuvaj izmjene'}
+                {mode === "create" ? "Dodaj proizvod" : "Sačuvaj izmjene"}
               </Button>
             </div>
           </form>

@@ -10,6 +10,8 @@ import { InspectionBodyProvider } from "./contexts/InspectionBodyContext";
 import InspectionBodies from "./pages/InspectionBodies";
 import { InspectionProvider } from "./contexts/InspectionContext";
 import Inspections from "./pages/Inspections";
+import Report from "./pages/Report";
+import { ReportProvider } from "./contexts/ReportContext";
 
 const queryClient = new QueryClient();
 
@@ -18,25 +20,28 @@ const App = () => (
     <ProductProvider>
       <InspectionBodyProvider>
         <InspectionProvider>
-          <TooltipProvider>
-            <Toaster />
-            <Sonner />
-            <BrowserRouter>
-              <Routes>
-                <Route path="/" element={<Products />} />
-                <Route path="/proizvodi" element={<Products />} />
-                <Route
-                  path="/inspekcijska-tijela"
-                  element={<InspectionBodies />}
-                />
-                <Route
-                  path="/inspekcijske-kontrole"
-                  element={<Inspections />}
-                />
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </BrowserRouter>
-          </TooltipProvider>
+          <ReportProvider>
+            <TooltipProvider>
+              <Toaster />
+              <Sonner />
+              <BrowserRouter>
+                <Routes>
+                  <Route path="/" element={<Products />} />
+                  <Route path="/proizvodi" element={<Products />} />
+                  <Route
+                    path="/inspekcijska-tijela"
+                    element={<InspectionBodies />}
+                  />
+                  <Route
+                    path="/inspekcijske-kontrole"
+                    element={<Inspections />}
+                  />
+                  <Route path="/izvjestaji" element={<Report />} />
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+              </BrowserRouter>
+            </TooltipProvider>
+          </ReportProvider>
         </InspectionProvider>
       </InspectionBodyProvider>
     </ProductProvider>

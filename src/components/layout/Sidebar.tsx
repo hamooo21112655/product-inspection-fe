@@ -19,7 +19,7 @@ const navItems = [
     label: "Inspekcijske kontrole",
     icon: ClipboardCheck,
   },
-  // { path: "/izvjestaji", label: "Izvještaji", icon: FileBarChart },
+  { path: "/izvjestaji", label: "Izvještaji", icon: FileBarChart },
 ];
 
 export function Sidebar() {

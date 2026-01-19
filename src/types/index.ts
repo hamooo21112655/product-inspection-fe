@@ -29,3 +29,11 @@ export interface Inspection {
   productSafe: boolean;
   createdAt: Date;
 }
+
+export interface Report {
+  data: Inspection[];
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+}

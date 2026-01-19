@@ -34,7 +34,7 @@ export default function Products() {
     setDeleteOpen(true);
   };
 
-  const handleSubmit = (data: Product) => {
+  const handleSubmit = (data: Omit<Product, "id" | "createdAt">) => {
     if (mode === "create") {
       addProduct(data);
       toast.success("Proizvod uspješno dodan");

@@ -1,4 +1,4 @@
-export const API_BASE_URL = "http://localhost:3000";
+export const API_BASE_URL = "https://product-inspection-be.onrender.com";
 
 export async function apiFetch<T>(
   url: string,

@@ -14,7 +14,11 @@ const navItems = [
     label: "Inspekcijska tijela",
     icon: Building2,
   },
-  // { path: "/kontrole", label: "Inspekcijske kontrole", icon: ClipboardCheck },
+  {
+    path: "/inspekcijske-kontrole",
+    label: "Inspekcijske kontrole",
+    icon: ClipboardCheck,
+  },
   // { path: "/izvjestaji", label: "Izvještaji", icon: FileBarChart },
 ];
 

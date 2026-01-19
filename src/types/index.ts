@@ -19,3 +19,13 @@ export interface InspectionBody {
   contactPerson: string;
   createdAt: Date;
 }
+
+export interface Inspection {
+  id: number;
+  productId: number;
+  inspectionBodyId: number;
+  inspectionDate: Date;
+  result: string;
+  productSafe: boolean;
+  createdAt: Date;
+}

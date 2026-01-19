@@ -47,7 +47,10 @@ export function ProductProvider({ children }: { children: ReactNode }) {
 
   const deleteMutation = useMutation({
     mutationFn: ({ id }: { id: number }) => deleteProduct(id),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["products"] }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["products"] });
+      queryClient.invalidateQueries({ queryKey: ["inspections"] });
+    },
     onError: (err) => {
       console.log("DELETE ERROR", err);
     },

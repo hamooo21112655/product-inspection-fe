@@ -142,7 +142,7 @@ export default function Products() {
         onOpenChange={setDeleteOpen}
         onConfirm={confirmDelete}
         title="Obriši proizvod"
-        description={`Da li ste sigurni da želite obrisati proizvod "${selectedProduct?.name}"? Ova akcija se ne može poništiti.`}
+        description={`Da li ste sigurni da želite obrisati proizvod "${selectedProduct?.name}"? Ova akcija će obrisati sve inspekcijske kontrole koje sadržavaju ovaj proizvod.`}
       />
     </MainLayout>
   );

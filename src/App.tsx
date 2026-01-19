@@ -8,6 +8,8 @@ import NotFound from "./pages/NotFound";
 import { ProductProvider } from "./contexts/ProductContext";
 import { InspectionBodyProvider } from "./contexts/InspectionBodyContext";
 import InspectionBodies from "./pages/InspectionBodies";
+import { InspectionProvider } from "./contexts/InspectionContext";
+import Inspections from "./pages/Inspections";
 
 const queryClient = new QueryClient();
 
@@ -15,21 +17,27 @@ const App = () => (
   <QueryClientProvider client={queryClient}>
     <ProductProvider>
       <InspectionBodyProvider>
-        <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
-            <Routes>
-              <Route path="/" element={<Products />} />
-              <Route path="/proizvodi" element={<Products />} />
-              <Route
-                path="/inspekcijska-tijela"
-                element={<InspectionBodies />}
-              />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </BrowserRouter>
-        </TooltipProvider>
+        <InspectionProvider>
+          <TooltipProvider>
+            <Toaster />
+            <Sonner />
+            <BrowserRouter>
+              <Routes>
+                <Route path="/" element={<Products />} />
+                <Route path="/proizvodi" element={<Products />} />
+                <Route
+                  path="/inspekcijska-tijela"
+                  element={<InspectionBodies />}
+                />
+                <Route
+                  path="/inspekcijske-kontrole"
+                  element={<Inspections />}
+                />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </BrowserRouter>
+          </TooltipProvider>
+        </InspectionProvider>
       </InspectionBodyProvider>
     </ProductProvider>
   </QueryClientProvider>

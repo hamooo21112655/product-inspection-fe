@@ -98,7 +98,7 @@ export default function InspectionBodies() {
               </p>
               <Button onClick={handleCreate}>
                 <Plus className="w-4 h-4 mr-2" />
-                Dodaj inspekcijsko body
+                Dodaj inspekcijsko tijelo
               </Button>
             </div>
           ) : (
@@ -170,7 +170,7 @@ export default function InspectionBodies() {
         onOpenChange={setDeleteOpen}
         onConfirm={confirmDelete}
         title="Obriši inspekcijsko tijelo"
-        description={`Da li ste sigurni da želite obrisati inspekcijsko tijelo "${selectedBody?.name}"? Ova akcija se ne može poništiti.`}
+        description={`Da li ste sigurni da želite obrisati inspekcijsko tijelo "${selectedBody?.name}"? Ova akcija će obrisati sve inspekcijske kontrole koje sadržavaju ovo inspekcijsko tijelo.`}
       />
     </MainLayout>
   );

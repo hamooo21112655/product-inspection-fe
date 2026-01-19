@@ -14,6 +14,7 @@ import {
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -30,10 +31,10 @@ import { InspectionBody } from "@/types";
 import { useEffect } from "react";
 
 const inspectionBodySchema = z.object({
-  name: z.string().min(1, "Naziv je obavezan").max(200),
+  name: z.string().trim().min(1, "Naziv je obavezan").max(100),
   inspectorate: z.nativeEnum(Inspectorate),
   jurisdiction: z.nativeEnum(Jurisdiction),
-  contactPerson: z.string().min(1, "Kontakt osoba je obavezna").max(100),
+  contactPerson: z.string().trim().min(1, "Kontakt osoba je obavezna").max(100),
 });
 
 type InspectionBodyFormData = z.infer<typeof inspectionBodySchema>;
@@ -106,11 +107,16 @@ export function InspectionBodyForm({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
-          <DialogTitle>
-            {mode === "create"
-              ? "Dodaj inspekcijsko tijelo"
-              : "Izmijeni inspekcijsko tijelo"}
-          </DialogTitle>
+          <div className="flex items-center gap-2">
+            <DialogTitle>
+              {mode === "create"
+                ? "Dodaj inspekcijsko tijelo"
+                : "Izmijeni inspekcijsko tijelo"}
+            </DialogTitle>
+            <DialogDescription className="text-xs text-muted-foreground">
+              (polja označena sa * su obavezna)
+            </DialogDescription>
+          </div>
         </DialogHeader>
         <Form {...form}>
           <form

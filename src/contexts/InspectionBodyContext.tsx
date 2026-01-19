@@ -52,8 +52,10 @@ export function InspectionBodyProvider({ children }: { children: ReactNode }) {
 
   const deleteMutation = useMutation({
     mutationFn: ({ id }: { id: number }) => deleteInspectionBody(id),
-    onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: ["inspection-bodies"] }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["inspection-bodies"] });
+      queryClient.invalidateQueries({ queryKey: ["inspections"] });
+    },
     onError: (err) => {
       console.log("DELETE ERROR", err);
     },

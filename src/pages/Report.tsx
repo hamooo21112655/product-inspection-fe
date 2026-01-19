@@ -181,10 +181,9 @@ export default function Report() {
                   onValueChange={handleInspectionBodyChange}
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="Sva tijela" />
+                    <SelectValue placeholder="Izaberite inspekcijsko tijelo" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="0">Sva inspekcijska tijela</SelectItem>
                     {inspectionBodies.map((body) => (
                       <SelectItem key={body.id} value={body.id.toString()}>
                         {body.name}
